@@ -1,3 +1,7 @@
+# tensorflow stuff
+checkpoint
+best_model.*
+
 # Mac stuff
 .DS_Store
 
