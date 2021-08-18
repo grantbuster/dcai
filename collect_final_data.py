@@ -22,12 +22,18 @@ for n in numerals:
     clean_num_dir(train_dir)
     clean_num_dir(vae_dir)
 
+    train_vae_files = glob(train_dir + '{}_*.png'.format(n))
+    for fp in train_vae_files:
+        os.remove(fp)
+    train_vae_files = glob(train_dir + '{}_*.png'.format(n))
+    assert not any(train_vae_files)
     train_files = glob(train_dir + '*.png')
     val_files = glob(val_dir + '*.png')
     vae_files = glob(vae_dir + '*.png')
+    assert len(vae_files) == 5000
 
     n_tot_files = len(train_files) + len(val_files)
-    n_vae_files = 1000 - n_tot_files
+    n_vae_files = 995 - n_tot_files
 
     choices = np.random.choice(np.arange(n_vae_files), n_vae_files,
                                replace=False)
@@ -40,4 +46,5 @@ for n in numerals:
     train_files = glob(train_dir + '*.png')
     val_files = glob(val_dir + '*.png')
     n_tot_files = len(train_files) + len(val_files)
-    assert n_tot_files == 1000
+    assert n_tot_files <= 1000
+    print(n, n_tot_files)
