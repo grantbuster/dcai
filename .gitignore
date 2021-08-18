@@ -1,5 +1,6 @@
 # Ignore the raw data folder
 data/
+*.png
 
 # tensorflow stuff
 checkpoint

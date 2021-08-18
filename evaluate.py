@@ -4,8 +4,8 @@ import numpy as np
 import json
 import sys
 
-user_predictions = str(sys.argv[1])
-test_data = str(sys.argv[2] + '/label_book')
+user_predictions = './predictions.json'
+test_data = str('label_book/label_book')
 tf.random.set_seed(123)
 
 with open(user_predictions) as f:

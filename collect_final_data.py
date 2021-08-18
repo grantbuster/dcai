@@ -25,6 +25,7 @@ for n in numerals:
     train_vae_files = glob(train_dir + '{}_*.png'.format(n))
     for fp in train_vae_files:
         os.remove(fp)
+
     train_vae_files = glob(train_dir + '{}_*.png'.format(n))
     assert not any(train_vae_files)
     train_files = glob(train_dir + '*.png')
