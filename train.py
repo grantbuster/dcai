@@ -88,7 +88,7 @@ if __name__ == "__main__":
     history = model.fit(
         train,
         validation_data=valid,
-        epochs=1,
+        epochs=100,
         callbacks=[checkpoint],
     )
 
@@ -100,26 +100,12 @@ if __name__ == "__main__":
     test_loss, test_acc = model.evaluate(test)
     print(f"test loss {test_loss}, test acc {test_acc}")
 
-
-    valid = tf.keras.preprocessing.image_dataset_from_directory(
-        user_data + '/val',
-        labels="inferred",
-        label_mode="categorical",
-        class_names=["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"],
-        shuffle=False,
-        seed=123,
-        batch_size=batch_size,
-        image_size=(32, 32),
-    )
-
     df = pd.DataFrame()
     x = []
-
     for i, image in enumerate(valid.unbatch()):
         x.append(image[0])
         fp = valid.file_paths[i]
         truth = image[1].numpy().argmax() + 1
-        print(i, image[0].shape, truth, fp)
         df.at[fp, 'dataset'] = 'val'
         df.at[fp, 'truth'] = truth
 
@@ -127,7 +113,6 @@ if __name__ == "__main__":
         x.append(image[0])
         fp = test.file_paths[i]
         truth = image[1].numpy().argmax() + 1
-        print(i, image[0].shape, truth, fp)
         df.at[fp, 'dataset'] = 'test'
         df.at[fp, 'truth'] = truth
 
