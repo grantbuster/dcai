@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
@@ -98,13 +100,32 @@ if __name__ == "__main__":
     test_loss, test_acc = model.evaluate(test)
     print(f"test loss {test_loss}, test acc {test_acc}")
 
+
+    valid = tf.keras.preprocessing.image_dataset_from_directory(
+        user_data + '/val',
+        labels="inferred",
+        label_mode="categorical",
+        class_names=["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"],
+        shuffle=False,
+        seed=123,
+        batch_size=batch_size,
+        image_size=(32, 32),
+    )
+
+    df = pd.DataFrame()
     x = []
-    for element in test.unbatch():
-        x.append(element[0])
+    for i, image in enumerate(valid.unbatch()):
+        x.append(image[0])
+        fp = valid.file_paths[i]
+        truth = image[1].argmax(axis=1)
+        df.at[fp, 'truth'] = truth
+    for i, image in enumerate(test.unbatch()):
+        x.append(image[0])
+        fp = test.file_paths[i]
+        truth = image[1].argmax(axis=1)
+        df.at[fp, 'truth'] = truth
 
     y_prob = model.predict(np.array(x))
-    y_classes = y_prob.argmax(axis=1)
-    print(y_classes)
-
-    with open('predictions.json', 'w') as outfile:
-        json.dump(y_classes.tolist(), outfile)
+    predictions = y_prob.argmax(axis=1)
+    df['predictions'] = predictions
+    df.to_csv('./predictions.csv')
