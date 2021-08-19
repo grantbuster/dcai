@@ -88,7 +88,7 @@ if __name__ == "__main__":
     history = model.fit(
         train,
         validation_data=valid,
-        epochs=100,
+        epochs=1,
         callbacks=[checkpoint],
     )
 
@@ -114,18 +114,26 @@ if __name__ == "__main__":
 
     df = pd.DataFrame()
     x = []
+
     for i, image in enumerate(valid.unbatch()):
         x.append(image[0])
         fp = valid.file_paths[i]
-        truth = image[1].argmax(axis=1)
+        truth = image[1].numpy().argmax() + 1
+        print(i, image[0].shape, truth, fp)
+        df.at[fp, 'dataset'] = 'val'
         df.at[fp, 'truth'] = truth
+
     for i, image in enumerate(test.unbatch()):
         x.append(image[0])
         fp = test.file_paths[i]
-        truth = image[1].argmax(axis=1)
+        truth = image[1].numpy().argmax() + 1
+        print(i, image[0].shape, truth, fp)
+        df.at[fp, 'dataset'] = 'test'
         df.at[fp, 'truth'] = truth
 
+    print('Running predictions...')
     y_prob = model.predict(np.array(x))
-    predictions = y_prob.argmax(axis=1)
-    df['predictions'] = predictions
+    predictions = y_prob.argmax(axis=1) + 1
+    df.index.name = 'fp'
+    df['prediction'] = predictions
     df.to_csv('./predictions.csv')
