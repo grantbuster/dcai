@@ -14,6 +14,7 @@ tf.random.set_seed(123)
 
 
 if __name__ == "__main__":
+    print('Running on "{}"'.format(user_data))
     train = tf.keras.preprocessing.image_dataset_from_directory(
         user_data + '/train',
         labels="inferred",
@@ -132,4 +133,6 @@ if __name__ == "__main__":
     predictions = y_prob.argmax(axis=1) + 1
     df.index.name = 'fp'
     df['prediction'] = predictions
-    df.to_csv('./predictions.csv')
+    fp = './predictions_{}.csv'.format(sys.argv[1])
+    df.to_csv(fp)
+    print('Finished writing predictions to: {}'.format(fp))
