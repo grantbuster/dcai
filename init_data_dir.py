@@ -5,12 +5,14 @@ import numpy as np
 
 np.random.seed(123)
 
-base_data = './data_base_clean/data_base_clean'
+base_data = './data_baseline_clean/data_baseline_clean'
 new_data = './dcai_gcb_01/dcai_gcb_01'
+
 if os.path.exists(new_data):
     shutil.rmtree(new_data)
-    shutil.copytree(base_data, new_data)
-    shutil.rmtree(new_data + '/ignore')
+
+shutil.copytree(base_data, new_data)
+shutil.rmtree(new_data + '/ignore')
 
 # n_val = 100
 
