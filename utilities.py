@@ -159,10 +159,13 @@ def engineer_images_by_num(eng_kwargs, data_dir, target_counts, ifile=0):
 
 
 def engineer_bad_images(bad_images, n_eng_images, data_dir, ifile=0):
-
+    print('Engineering bad images with target count of {}'
+          .format(n_eng_images))
     previous_fps = glob(data_dir + '/train/*/*eng_bad_*.png')
     for fp in previous_fps:
         os.remove(fp)
+
+    count_all_files(data_dir)
 
     ifps = np.random.choice(np.arange(len(bad_images)), n_eng_images,
                             replace=True)
@@ -171,6 +174,7 @@ def engineer_bad_images(bad_images, n_eng_images, data_dir, ifile=0):
         base_dir = os.path.dirname(fp)
         fn = 'eng_bad_{}.png'.format(str(ifile).zfill(5))
         fp_out = os.path.join(base_dir, fn)
+        fp_out = fp_out.replace('/val/', '/train/')
 
         process_image(fp, fp_out,
             enhance='random',
@@ -181,6 +185,9 @@ def engineer_bad_images(bad_images, n_eng_images, data_dir, ifile=0):
             show=False,
             )
         ifile += 1
+
+    count_all_files(data_dir)
+    print('Engineered {} bad images.'.format(ifile))
 
 
 def parse_bad_images(predictions_df):

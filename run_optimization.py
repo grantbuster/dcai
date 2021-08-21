@@ -14,7 +14,8 @@ if __name__ == '__main__':
     test_dir = './label_book/label_book'
     base_dir = './data_baseline_clean/data_baseline_clean'
     target_count_tot = 9995
-    epochs = 10
+    epochs = 50
+    n_iter = 100
 
     # initial target file count 8000 files (80% of max)
     target_counts = {'i': 240, 'ii': 560, 'iii': 560, 'iv': 1360,
@@ -44,7 +45,7 @@ if __name__ == '__main__':
     predictions = None
     optm_df = pd.DataFrame()
     bad_images = []
-    for i in range(2):
+    for i in range(n_iter):
         if i > 0:
             i_bad_images = parse_bad_images(predictions)
             bad_images += i_bad_images
@@ -58,5 +59,5 @@ if __name__ == '__main__':
         optm_df.at[i, 'n_bad_images'] = len(bad_images)
         optm_df.at[i, 'n_unique_bad_images'] = len(set(bad_images))
 
-    optm_df.to_csv('./optmization_record_{}.csv'
-                   .format(os.path.basename(data_dir)))
+        optm_df.to_csv('./optimization_record_{}.csv'
+                       .format(os.path.basename(data_dir)))

@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import tensorflow as tf
 import numpy as np
@@ -125,12 +126,13 @@ def train(user_data, test_data, batch_size=8, epochs=100):
     print('Running predictions...')
     y_prob = model.predict(np.array(x))
     predictions = y_prob.argmax(axis=1) + 1
-    df.index.name = 'fp'
     df['prediction'] = predictions
-    fp = './predictions_{}.csv'.format(sys.argv[1])
+    df.index.name = 'fp'
+    df = df.reset_index()
+    fp = './predictions_{}.csv'.format(os.path.basename(user_data), index=False)
     df.to_csv(fp)
     print('Finished writing predictions to: {}'.format(fp))
-    return predictions, val_acc, test_acc
+    return df, val_acc, test_acc
 
 
 if __name__ == '__main__':
