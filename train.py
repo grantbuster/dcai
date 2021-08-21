@@ -1,19 +1,13 @@
-import os
 import pandas as pd
 import tensorflow as tf
-from tensorflow import keras
 import numpy as np
-import json
 import sys
 
 
-user_data = str(sys.argv[1] + '/' + sys.argv[1])
-test_data = str(sys.argv[2] + '/' + 'label_book')
-batch_size = 8
 tf.random.set_seed(123)
 
 
-if __name__ == "__main__":
+def train(user_data, test_data, batch_size=8, epochs=100):
     print('Running on "{}"'.format(user_data))
     train = tf.keras.preprocessing.image_dataset_from_directory(
         user_data + '/train',
@@ -89,14 +83,14 @@ if __name__ == "__main__":
     history = model.fit(
         train,
         validation_data=valid,
-        epochs=100,
+        epochs=epochs,
         callbacks=[checkpoint],
     )
 
     model.load_weights("best_model")
 
-    loss, acc = model.evaluate(valid)
-    print(f"final loss {loss}, final acc {acc}")
+    loss, val_acc = model.evaluate(valid)
+    print(f"final loss {loss}, final val_acc {val_acc}")
 
     test_loss, test_acc = model.evaluate(test)
     print(f"test loss {test_loss}, test acc {test_acc}")
@@ -136,3 +130,10 @@ if __name__ == "__main__":
     fp = './predictions_{}.csv'.format(sys.argv[1])
     df.to_csv(fp)
     print('Finished writing predictions to: {}'.format(fp))
+    return predictions, val_acc, test_acc
+
+
+if __name__ == '__main__':
+    user_data = str(sys.argv[1] + '/' + sys.argv[1])
+    test_data = str(sys.argv[2] + '/' + 'label_book')
+    train(user_data, test_data)
