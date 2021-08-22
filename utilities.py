@@ -8,6 +8,7 @@ import cv2
 import PIL
 from PIL import Image, ImageEnhance
 import matplotlib.pyplot as plt
+import zipfile
 
 from train import train
 
@@ -18,8 +19,6 @@ NUMERALS = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
 def init_data_dir(new_data_dir, base_data_dir='./data_baseline_clean/data_baseline_clean/'):
     if os.path.exists(new_data_dir):
         shutil.rmtree(new_data_dir)
-    else:
-        os.makedirs(new_data_dir)
     shutil.copytree(base_data_dir, new_data_dir)
     shutil.rmtree(new_data_dir + '/ignore')
 
@@ -56,7 +55,7 @@ def process_image(fp_source, fp_dest,
                   dilate=False,
                   enhance=1,
                   contrast=1,
-                  resize=(32, 32),
+                  resize=(256, 256),
                   show=False):
 
     image = Image.open(fp_source)
@@ -86,11 +85,11 @@ def process_image(fp_source, fp_dest,
                                      expand=False,
                                      fillcolor='white')
     if erode:
-        kernel = np.ones((3, 3), np.uint8)
+        kernel = np.ones((5, 5), np.uint8)
         arr_out = cv2.erode(asarray(image_out), kernel, iterations=1)
         image_out = Image.fromarray(arr_out)
     if dilate:
-        kernel = np.ones((2, 2), np.uint8)
+        kernel = np.ones((5, 5), np.uint8)
         arr_out = cv2.dilate(asarray(image_out), kernel, iterations=1)
         image_out = Image.fromarray(arr_out)
 
@@ -152,7 +151,7 @@ def engineer_images_by_num(eng_kwargs, data_dir, target_counts, ifile=0):
                     contrast=1,
                     rotate='random',
                     erode='random',
-                    dilate=False,
+                    dilate='random',
                     show=False,
                     **kwargs)
                 ifile += 1
@@ -181,7 +180,7 @@ def engineer_bad_images(bad_images, n_eng_images, data_dir, ifile=0):
             contrast=1,
             rotate='random',
             erode='random',
-            dilate=False,
+            dilate='random',
             show=False,
             )
         ifile += 1
@@ -199,3 +198,13 @@ def parse_bad_images(predictions_df):
         bad_images = predictions_df.loc[bad_mask & val_mask, 'fp'].values
         bad_images = ['./' + fp for fp in bad_images]
         return bad_images
+
+
+def zipdir(source, destination):
+    # ziph is zipfile handle
+    with zipfile.ZipFile(destination, 'w', zipfile.ZIP_DEFLATED) as ziph:
+        for root, _, files in os.walk(source):
+            for file in files:
+                ziph.write(os.path.join(root, file),
+                           os.path.relpath(os.path.join(root, file),
+                                           os.path.join(source, '..')))
