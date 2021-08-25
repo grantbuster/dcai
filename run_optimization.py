@@ -30,9 +30,9 @@ if __name__ == '__main__':
                      'ix': 1000, 'x': 500}
 
     # initial target file count - naive
-    target_counts = {'i': 500, 'ii': 500, 'iii': 500, 'iv': 500,
-                     'v': 500, 'vi': 500, 'vii': 500, 'viii': 500,
-                     'ix': 500, 'x': 500}
+    target_counts = {'i': 500, 'ii': 930, 'iii': 930, 'iv': 930,
+                     'v': 500, 'vi': 930, 'vii': 930, 'viii': 930,
+                     'ix': 930, 'x': 500}
 
     init_data_dir(data_dir, base_dir)
     _, file_count = count_all_files(data_dir)
