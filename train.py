@@ -74,7 +74,7 @@ def train(user_data, test_data, batch_size=8, epochs=100):
     print(f"loss {loss_0}, acc {acc_0}")
 
     checkpoint = tf.keras.callbacks.ModelCheckpoint(
-        "best_model",
+        "best_model_{}".format(os.path.basename(user_data)),
         monitor="val_accuracy",
         mode="max",
         save_best_only=True,
@@ -88,7 +88,7 @@ def train(user_data, test_data, batch_size=8, epochs=100):
         callbacks=[checkpoint],
     )
 
-    model.load_weights("best_model")
+    model.load_weights("best_model_{}".format(os.path.basename(user_data)))
 
     loss, val_acc = model.evaluate(valid)
     print(f"final loss {loss}, final val_acc {val_acc}")
