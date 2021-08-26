@@ -61,6 +61,9 @@ def process_image(fp_source, fp_dest,
     image = Image.open(fp_source)
     image_out = Image.open(fp_source)
 
+    if len(asarray(image_out).shape) > 2:
+        image_out = Image.fromarray(asarray(image_out)[:, :, 0])
+
     if rotate == 'random':
         rotate = np.random.normal(0, 12)
     if enhance == 'random':
@@ -68,7 +71,7 @@ def process_image(fp_source, fp_dest,
     if contrast == 'random':
         contrast = np.maximum(0.3, np.random.normal(1, 0.5))
     if erode == 'random':
-        erode = np.random.choice([0, 1], 1)
+        erode = np.random.choice([0, 1, 2], 1)
     if dilate == 'random':
         dilate = np.random.choice([0, 1], 1)
 
@@ -86,19 +89,22 @@ def process_image(fp_source, fp_dest,
                                      fillcolor='white')
     if erode:
         kernel = np.ones((5, 5), np.uint8)
-        arr_out = cv2.erode(asarray(image_out), kernel, iterations=1)
+        arr_out = cv2.erode(asarray(image_out), kernel, iterations=int(erode))
         image_out = Image.fromarray(arr_out)
     if dilate:
         kernel = np.ones((5, 5), np.uint8)
         arr_out = cv2.dilate(asarray(image_out), kernel, iterations=1)
         image_out = Image.fromarray(arr_out)
 
-    image_out = image_out.resize(resize)
-
     image_out = ImageEnhance.Sharpness(image_out)
     image_out = image_out.enhance(enhance)
     image_out = ImageEnhance.Contrast(image_out)
     image_out = image_out.enhance(contrast)
+
+    image_out = image_out.resize(resize)
+    image_out = asarray(image_out)
+    image_out = np.round(image_out).astype(np.uint8)
+    image_out = Image.fromarray(image_out)
 
     if show:
         fig = plt.figure(figsize=(15, 5))

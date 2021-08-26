@@ -11,9 +11,9 @@ NUMERALS = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
 
 
 if __name__ == '__main__':
-    data_dir = './dcai_gcb_07/dcai_gcb_07'
+    data_dir = './dcai_gcb_10/dcai_gcb_10'
     test_dir = './label_book/label_book'
-    base_dir = './data_baseline_clean/data_baseline_clean'
+    base_dir = './data_baseline_aug/data_baseline_aug'
     job_tag = os.path.basename(data_dir)
     target_count_tot = 9995
     epochs = 50
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                      'v': 500, 'vi': 1000, 'vii': 1000, 'viii': 1000,
                      'ix': 1000, 'x': 500}
 
-    # initial target file count - naive
+    # initial target file count - naive (8010 files)
     target_counts = {'i': 500, 'ii': 930, 'iii': 930, 'iv': 930,
                      'v': 500, 'vi': 930, 'vii': 930, 'viii': 930,
                      'ix': 930, 'x': 500}
@@ -62,6 +62,7 @@ if __name__ == '__main__':
         if i > 0:
             i_bad_images = parse_bad_images(predictions)
             bad_images += i_bad_images
+            bad_images = list(set(bad_images))
             bad_image_record[i] = bad_images
             engineer_bad_images(bad_images, n_opt_files, data_dir)
             zipdir(data_dir, './{}_{}.zip'.format(job_tag, i))
@@ -72,11 +73,9 @@ if __name__ == '__main__':
         optm_df.at[i, 'val_acc'] = val_acc
         optm_df.at[i, 'test_acc'] = test_acc
         optm_df.at[i, 'n_bad_images'] = len(bad_images)
-        optm_df.at[i, 'n_unique_bad_images'] = len(set(bad_images))
         for num in NUMERALS:
             num_bad = [fp for fp in bad_images if '/{}/'.format(num) in fp]
             optm_df.at[i, '{}_bad_images'.format(num)] = len(num_bad)
-            optm_df.at[i, '{}_unique_bad_images'.format(num)] = len(set(num_bad))
 
         optm_df.to_csv('./optimization_record_{}.csv'.format(job_tag))
         with open('./bad_image_record_{}.json'.format(job_tag), 'w') as f:
