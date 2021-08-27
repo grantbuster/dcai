@@ -16,23 +16,13 @@ if __name__ == '__main__':
     base_dir = './data_baseline_aug/data_baseline_aug'
     job_tag = os.path.basename(data_dir)
     target_count_tot = 9995
-    epochs = 50
+    epochs = 100
     n_iter = 50
 
-    # initial target file count 8000 files (80% of max)
-    target_counts = {'i': 240, 'ii': 560, 'iii': 560, 'iv': 1360,
-                     'v': 640, 'vi': 800, 'vii': 1120, 'viii': 1200,
-                     'ix': 1120, 'x': 400}
-
-    # initial target file count - balanced w perceived challenge (7250 files)
-    target_counts = {'i': 250, 'ii': 500, 'iii': 500, 'iv': 1000,
-                     'v': 500, 'vi': 1000, 'vii': 1000, 'viii': 1000,
-                     'ix': 1000, 'x': 500}
-
-    # initial target file count - naive (8010 files)
-    target_counts = {'i': 500, 'ii': 930, 'iii': 930, 'iv': 930,
-                     'v': 500, 'vi': 930, 'vii': 930, 'viii': 930,
-                     'ix': 930, 'x': 500}
+    # initial target file count - naive (7500 files)
+    target_counts = {'i': 400, 'ii': 900, 'iii': 900, 'iv': 900,
+                     'v': 400, 'vi': 900, 'vii': 900, 'viii': 900,
+                     'ix': 900, 'x': 400}
 
     init_data_dir(data_dir, base_dir)
     _, file_count = count_all_files(data_dir)

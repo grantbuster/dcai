@@ -20,7 +20,8 @@ def init_data_dir(new_data_dir, base_data_dir='./data_baseline_clean/data_baseli
     if os.path.exists(new_data_dir):
         shutil.rmtree(new_data_dir)
     shutil.copytree(base_data_dir, new_data_dir)
-    shutil.rmtree(new_data_dir + '/ignore')
+    if os.path.exists(new_data_dir + '/ignore'):
+        shutil.rmtree(new_data_dir + '/ignore')
 
 
 def get_file_count(numeral, data_dir):
